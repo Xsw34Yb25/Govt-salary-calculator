@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ (তিনটি ধাপ)</title>
+    <style>
+        body {
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 15px;
+            direction: ltr;
+        }
+        .container {
+            max-width: 750px;
+            margin: 0 auto;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #1e8449;
+            margin-bottom: 25px;
+            font-size: 22px;
+            font-weight: bold;
+            line-height: 1.4;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: bold;
+            color: #34495e;
+            font-size: 15px;
+        }
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 6px;
+            font-size: 16px;
+            background-color: #fff;
+            box-sizing: border-box;
+            -webkit-appearance: menulist;
+            -moz-appearance: menulist;
+            appearance: menulist;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            font-size: 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:active {
+            background-color: #219653;
+        }
+        .footer-credit {
+            text-align: right;
+            font-size: 13px;
+            color: #1b2631; /* গাঢ় ও স্পষ্ট কালার */
+            font-weight: bold;
+            margin-top: 10px;
+            font-style: italic;
+            font-family: Arial, sans-serif;
+            line-height: 1.4;
+        }
+        .result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f8f5;
+            border-left: 5px solid #27ae60;
+            border-radius: 4px;
+            display: none;
+        }
+        .result-box h3 {
+            margin-top: 0;
+            color: #16a085;
+            font-size: 18px;
+            border-bottom: 2px solid #a3e4d7;
+            padding-bottom: 8px;
+        }
+        .result-item {
+            margin: 8px 0;
+            font-size: 15px;
+        }
+        .step-card {
+            background: #ffffff;
+            border: 1px solid #a3e4d7;
+            border-radius: 6px;
+            padding: 12px;
+            margin-top: 12px;
+        }
+        .step-card h4 {
+            margin: 0 0 8px 0;
+            color: #2c3e50;
+            font-size: 16px;
+            border-bottom: 1px dashed #d0d3d4;
+            padding-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ (তিনটি ধাপ)</h2>
+    
+    <div class="form-group">
+        <label for="gradeSelect">আপনার বর্তমান গ্রেড নির্বাচন করুন:</label>
+        <select id="gradeSelect" onchange="updateSteps()">
+            <option value="">-- গ্রেড বেছে নিন --</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label for="stepSelect">(২০১৫ সালের বেতন স্কেলে ৩০ জুন ২০২৬ তারিখে আপনার বেতনের ধাপ):</label>
+        <select id="stepSelect">
+            <option value="">-- প্রথমে গ্রেড নির্বাচন করুন --</option>
+        </select>
+    </div>
+
+    <button type="button" onclick="calculateSalary()">বেতন হিসাব করুন</button>
+    
+    <div class="footer-credit">
+        Developed by Engr. Zahid Rahman<br>
+        Bangladesh Railway
+    </div>
+
+    <div class="result-box" id="resultBox">
+        <h3>হিসাবের ফলাফল:</h3>
+        <div class="result-item" id="resGrade"></div>
+        <div class="result-item" id="resCurrent2015"></div>
+        <div class="result-item" id="resNew2026Base"></div>
+        <div class="result-item" id="resNew2026WithIncrement"></div>
+        <div class="result-item" id="resDiff"></div>
+        <div class="result-item" id="resPercentageGroup"></div>
+
+        <!-- প্রথম ধাপ -->
+        <div class="step-card" id="cardStep1">
+            <h4>১ম ধাপ: ১লা জুলাই, ২০২৬</h4>
+            <div id="resStep1Details"></div>
+        </div>
+
+        <!-- দ্বিতীয় ধাপ -->
+        <div class="step-card" id="cardStep2">
+            <h4>২য় ধাপ: ১লা জানুয়ারি, ২০২৭</h4>
+            <div id="resStep2Details"></div>
+        </div>
+
+        <!-- তৃতীয় ধাপ (বাৎসরিক ইনক্রিমেন্ট ছাড়া এবং সহ উভয় ফিগার) -->
+        <div class="step-card" id="cardStep3">
+            <h4>৩য় ধাপ: ১লা জুলাই, ২০২৭</h4>
+            <div id="resStep3Details"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ১ থেকে ২০ গ্রেডের ২০১৫ এবং ২০২৬ সালের পূর্ণাঙ্গ স্কেল ডেটা
+    const scaleData = {
+        1: { scale2015: [78000], scale2026: [156000] },
+        2: { scale2015: [66000, 68480, 71050, 73720, 76490], scale2026: [132000, 135700, 139400, 143200, 147200, 151200, 153000] },
+        3: { scale2015: [56500, 58760, 61120, 63570, 66120, 68770, 71530, 74400], scale2026: [113000, 117000, 121100, 125300, 129700, 134300, 139000, 143800, 148800] },
+        4: { scale2015: [50000, 52000, 54080, 56250, 58500, 60840, 63280, 65820, 68460, 71200], scale2026: [100000, 103500, 107200, 110900, 114800, 118800, 123000, 127300, 131700, 136300, 142400] },
+        5: { scale2015: [43000, 44940, 46970, 49090, 51300, 53610, 56030, 58560, 61200, 63960, 66840, 69850], scale2026: [86000, 89500, 93100, 96800, 100700, 104700, 108900, 113200, 117700, 122500, 127400, 132400, 139700] },
+        6: { scale2015: [35500, 37280, 39150, 41110, 43170, 45330, 47600, 49980, 52480, 55110, 57870, 60770, 63810, 67010], scale2026: [71000, 74600, 78300, 82200, 86400, 90700, 95200, 100000, 104900, 110200, 115700, 121500, 127600, 134000] },
+        7: { scale2015: [29000, 30450, 31980, 33580, 35260, 37030, 38890, 40840, 42890, 45040, 47300, 49670, 52160, 54770, 57510, 60390, 63410], scale2026: [58000, 60900, 64000, 67200, 70500, 74100, 77800, 81700, 85700, 90000, 94500, 99200, 104200, 109400, 114900, 120600, 126800] },
+        8: { scale2015: [23000, 24150, 25360, 26630, 27970, 29370, 30840, 32390, 34010, 35720, 37510, 39390, 41360, 43430, 45610, 47900, 50300, 52820, 55470], scale2026: [46000, 48300, 50800, 53300, 56000, 58800, 61700, 64800, 68000, 71400, 75000, 78700, 82700, 86800, 91100, 95700, 100500, 105500, 110800] },
+        9: { scale2015: [22000, 23100, 24260, 25480, 26760, 28100, 29510, 30990, 32540, 34170, 35880, 37680, 39570, 41550, 43630, 45820, 48120, 50530, 53060], scale2026: [44000, 46200, 48600, 51000, 53500, 56200, 59000, 62000, 65100, 68300, 71700, 75300, 79100, 83000, 87200, 91500, 96100, 100900, 105900] },
+        10: { scale2015: [16000, 16800, 17640, 18530, 19460, 20440, 21470, 22550, 23680, 24870, 26120, 27430, 28810, 30260, 31780, 33370, 35040, 36800, 38640], scale2026: [32000, 33600, 35300, 37100, 38900, 40900, 42900, 45100, 47300, 49700, 52200, 54800, 57500, 60400, 63400, 66600, 69900, 73400, 77300] },
+        11: { scale2015: [12500, 13130, 13790, 14480, 15210, 15980, 16780, 17620, 18510, 19440, 20420, 21450, 22530, 23660, 24850, 26100, 27410, 28790, 30230], scale2026: [25000, 26300, 27600, 29000, 30400, 32000, 33600, 35200, 37000, 38800, 40800, 42800, 44900, 47200, 49500, 52000, 54600, 57300, 60500] },
+        12: { scale2015: [11300, 11870, 12470, 13100, 13760, 14450, 15180, 15940, 16740, 17580, 18460, 19390, 20360, 21380, 22450, 23580, 24760, 26000, 27300], scale2026: [24300, 25600, 26800, 28200, 29600, 31100, 32600, 34200, 36000, 37700, 39600, 41600, 43700, 45900, 48200, 50600, 53100, 55700, 58700] },
+        13: { scale2015: [11000, 11550, 12130, 12740, 13380, 14050, 14760, 15500, 16280, 17100, 17960, 18860, 19810, 20810, 21860, 22960, 24110, 25320, 26590], scale2026: [24000, 25200, 26500, 27800, 29200, 30700, 32200, 33800, 35500, 37300, 39100, 41100, 43200, 45300, 47600, 49900, 52400, 55100, 58000] },
+        14: { scale2015: [10200, 10710, 11250, 11820, 12420, 13050, 13710, 14400, 15120, 15880, 16680, 17520, 18400, 19320, 20290, 21310, 22380, 23500, 24680], scale2026: [23500, 24700, 26000, 27300, 28600, 30000, 31500, 33100, 34800, 36500, 38300, 40200, 42000, 44400, 46600, 48900, 51300, 53900, 56800] },
+        15: { scale2015: [9700, 10190, 10700, 11240, 11810, 12410, 13040, 13700, 14390, 15110, 15870, 16670, 17510, 18390, 19310, 20280, 21300, 22370, 23490], scale2026: [22800, 24000, 25200, 26400, 27800, 29100, 30600, 32100, 33170, 35400, 37200, 39000, 41000, 43000, 45200, 47400, 49800, 52300, 55200] },
+        16: { scale2015: [9300, 9770, 10260, 10780, 11320, 11890, 12490, 13120, 13780, 14470, 15200, 15960, 16760, 17600, 18480, 19410, 20390, 21410, 22490], scale2026: [21900, 23000, 24200, 25400, 26700, 28000, 29400, 30900, 32400, 34000, 35700, 37500, 39400, 41300, 43400, 45600, 47900, 50200, 52900] },
+        17: { scale2015: [9000, 9450, 9930, 10430, 10960, 11510, 12090, 12700, 13340, 14010, 14720, 15460, 16240, 17060, 17920, 18820, 19770, 20760, 21800], scale2026: [21400, 22500, 23600, 24800, 26100, 27400, 28700, 30200, 31700, 33200, 34900, 36700, 38500, 40400, 42000, 44500, 46800, 49100, 51900] },
+        18: { scale2015: [8800, 9240, 9710, 10200, 10710, 11250, 11820, 12420, 13050, 13710, 14400, 15120, 15880, 16680, 17520, 18400, 19320, 20290, 21310], scale2026: [21000, 22100, 23200, 24400, 25600, 26900, 28200, 29600, 31100, 32600, 34300, 36000, 37800, 39600, 41600, 43700, 45900, 48200, 50900] },
+        19: { scale2015: [8500, 8930, 9380, 9850, 10350, 10870, 11420, 12000, 12600, 13230, 13900, 14600, 15330, 16100, 16910, 17760, 18650, 19590, 20570], scale2026: [20500, 21600, 22700, 23800, 25000, 26200, 27500, 28900, 30300, 31700, 33400, 35100, 36900, 38700, 40600, 42000, 44800, 47000, 49600] },
+        20: { scale2015: [8250, 8670, 9110, 9570, 10050, 10560, 11090, 11650, 12240, 12860, 13510, 14190, 14900, 15650, 16440, 17270, 18140, 19050, 20010], scale2026: [20000, 21000, 22100, 23200, 24400, 25600, 26900, 28200, 29600, 31100, 32600, 34300, 36000, 37800, 39600, 41600, 43700, 45900, 48400] }
+    };
+
+    function initGrades() {
+        const gradeSelect = document.getElementById('gradeSelect');
+        gradeSelect.innerHTML = '<option value="">-- গ্রেড বেছে নিন --</option>';
+        for (let i = 1; i <= 20; i++) {
+            let option = document.createElement('option');
+            option.value = i;
+            option.text = i + " নম্বর গ্রেড";
+            gradeSelect.appendChild(option);
+        }
+    }
+
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initGrades);
+    } else {
+        initGrades();
+    }
+    window.onload = initGrades;
+
+    function updateSteps() {
+        const grade = document.getElementById('gradeSelect').value;
+        const stepSelect = document.getElementById('stepSelect');
+        stepSelect.innerHTML = '<option value="">-- ধাপ বেছে নিন --</option>';
+
+        if (grade && scaleData[grade]) {
+            const steps2015 = scaleData[grade].scale2015;
+            steps2015.forEach((val, index) => {
+                let option = document.createElement('option');
+                option.value = index;
+                option.text = `ধাপ ${index + 1}: ${val} টাকা`;
+                stepSelect.appendChild(option);
+            });
+        }
+    }
+
+    function calculateSalary() {
+        const grade = parseInt(document.getElementById('gradeSelect').value);
+        const stepIndex = parseInt(document.getElementById('stepSelect').value);
+
+        if (!grade || isNaN(stepIndex)) {
+            alert('দয়া করে সঠিক গ্রেড এবং ধাপ নির্বাচন করুন।');
+            return;
+        }
+
+        const currentBasic = scaleData[grade].scale2015[stepIndex];
+        const start2015 = scaleData[grade].scale2015[0];
+        const scale2026List = scaleData[grade].scale2026;
+        const start2026 = scale2026List[0];
+
+        let new2026Base = 0;
+
+        if (currentBasic === start2015) {
+            new2026Base = start2026;
+        } else {
+            const diff = currentBasic - start2015;
+            let targetAmount = start2026 + diff;
+
+            let matched = false;
+            for (let amt of scale2026List) {
+                if (amt >= targetAmount) {
+                    new2026Base = amt;
+                    matched = true;
+                    break;
+                }
+            }
+            if (!matched) {
+                new2026Base = scale2026List[scale2026List.length - 1];
+            }
+        }
+
+        // নতুন নির্ধারিত মূল বেতনের সাথে ঠিক পরের একটি ইনক্রিমেন্ট যোগ করার লজিক
+        let new2026WithIncrement = new2026Base;
+        const baseIndex = scale2026List.indexOf(new2026Base);
+        if (baseIndex !== -1 && baseIndex < scale2026List.length - 1) {
+            new2026WithIncrement = scale2026List[baseIndex + 1];
+        } else {
+            new2026WithIncrement = new2026Base;
+        }
+
+        // বেতন বৃদ্ধির পার্থক্য = (ইনক্রিমেন্টসহ নতুন মূল বেতন) - (২০১৫ সালের বর্তমান মূল বেতন)
+        const payDifference = new2026WithIncrement - currentBasic;
+        
+        // ধাপ অনুযায়ী পার্সেন্টেজ নির্ধারণ
+        let p1 = (grade <= 9) ? 40 : 50;
+        let p2 = (grade <= 9) ? 70 : 75;
+        let p3 = 100;
+
+        const inc1 = Math.round((payDifference * p1) / 100);
+        const inc2 = Math.round((payDifference * p2) / 100);
+        const inc3 = Math.round((payDifference * p3) / 100);
+
+        const sal1 = currentBasic + inc1;
+        const sal2 = currentBasic + inc2;
+        const sal3 = currentBasic + inc3;
+
+        // ৩য় ধাপের বাৎসরিক ইনক্রিমেন্টসহ পরবর্তী ফিগার
+        let sal3WithInc = sal3;
+        let matchedSal3Index = -1;
+        for (let i = 0; i < scale2026List.length; i++) {
+            if (scale2026List[i] >= sal3) {
+                matchedSal3Index = i;
+                break;
+            }
+        }
+        if (matchedSal3Index !== -1 && matchedSal3Index < scale2026List.length - 1) {
+            sal3WithInc = scale2026List[matchedSal3Index + 1];
+        } else {
+            sal3WithInc = scale2026List[scale2026List.length - 1];
+        }
+
+        document.getElementById('resGrade').innerHTML = `<b>নির্বাচিত গ্রেড:</b> ${grade} নম্বর গ্রেড`;
+        document.getElementById('resCurrent2015').innerHTML = `<b>২০১৫ সালের বেতন স্কেলে ৩০ জুন ২০২৬ তারিখে আপনার বর্তমান মূল বেতন:</b> ${currentBasic} টাকা`;
+        document.getElementById('resNew2026Base').innerHTML = `<b>২০২৬ সালের নতুন নির্ধারিত মূল বেতন:</b> ${new2026Base} টাকা`;
+        document.getElementById('resNew2026WithIncrement').innerHTML = `<b>২০২৬ সালে নির্ধারিত মূল বেতনের সাথে একটি ইনক্রিমেন্ট যোগ করে মোট বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${new2026WithIncrement} টাকা</span>`;
+        document.getElementById('resDiff').innerHTML = `<b>বেতন বৃদ্ধির পার্থক্য (নতুন এবং বর্তমান):</b> ${payDifference} টাকা`;
+        
+        let groupText = (grade <= 9) ? '৯ম থেকে ১ম গ্রেড (বৃদ্ধি হার: ৪০% -> ৭০% -> ১০০%)' : '১০ম থেকে ২০তম গ্রেড (বৃদ্ধি হার: ৫০% -> ৭৫% -> ১০০%)';
+        document.getElementById('resPercentageGroup').innerHTML = `<b>গ্রুপ ও বৃদ্ধির ধাপসমূহ:</b> ${groupText}`;
+
+        // ১ম ধাপ আউটপুট
+        document.getElementById('resStep1Details').innerHTML = `
+            <div class="result-item"><b>হার:</b> ${p1}%</div>
+            <div class="result-item"><b>নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal1} টাকা</span></div>
+        `;
+
+        // ২য় ধাপ আউটপুট
+        document.getElementById('resStep2Details').innerHTML = `
+            <div class="result-item"><b>হার:</b> ${p2}%</div>
+            <div class="result-item"><b>নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal2} টাকা</span></div>
+        `;
+
+        // ৩য় ধাপ আউটপুট (বাৎসরিক ইনক্রিমেন্ট ছাড়া এবং সহ উভয় ফিগার)
+        document.getElementById('resStep3Details').innerHTML = `
+            <div class="result-item"><b>হার:</b> ${p3}% (শতভাগ পূর্ণ)</div>
+            <div class="result-item"><b>বাৎসরিক ইনক্রিমেন্ট ছাড়া নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal3} টাকা</span></div>
+            <div class="result-item" style="margin-top: 6px; border-top: 1px dashed #d0d3d4; padding-top: 6px;"><b>বাৎসরিক ইনক্রিমেন্টসহ নির্ধারিত মূল বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${sal3WithInc} টাকা</span></div>
+        `;
+        
+        document.getElementById('resultBox').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
