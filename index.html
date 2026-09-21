@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ (তিনটি ধাপ)</title>
+    <title>পে স্কেল ২০২৬ অনুযায়ী সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ</title>
     <style>
         body {
             font-family: 'SolaimanLipi', Arial, sans-serif;
@@ -68,7 +68,7 @@
         .footer-credit {
             text-align: right;
             font-size: 13px;
-            color: #1b2631; /* গাঢ় ও স্পষ্ট কালার */
+            color: #1b2631;
             font-weight: bold;
             margin-top: 10px;
             font-style: italic;
@@ -113,7 +113,7 @@
 <body>
 
 <div class="container">
-    <h2>সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ (তিনটি ধাপ)</h2>
+    <h2>পে স্কেল ২০২৬ অনুযায়ী সরকারি কর্মকর্তা কর্মচারীদের বেতন নির্ধারণ</h2>
     
     <div class="form-group">
         <label for="gradeSelect">আপনার বর্তমান গ্রেড নির্বাচন করুন:</label>
@@ -133,7 +133,8 @@
     
     <div class="footer-credit">
         Developed by Engr. Zahid Rahman<br>
-        Bangladesh Railway
+        Bangladesh Railway<br>
+        Vr-1.52
     </div>
 
     <div class="result-box" id="resultBox">
@@ -151,22 +152,21 @@
             <div id="resStep1Details"></div>
         </div>
 
-        <!-- দ্বিতীয় ধাপ -->
+        <!-- দ্বিতীয় ধাপ -->
         <div class="step-card" id="cardStep2">
-            <h4>২য় ধাপ: ১লা জানুয়ারি, ২০২৭</h4>
+            <h4>২য় ধাপ: ১লা জানুয়ারি, ২০২৭</h4>
             <div id="resStep2Details"></div>
         </div>
 
-        <!-- তৃতীয় ধাপ (বাৎসরিক ইনক্রিমেন্ট ছাড়া এবং সহ উভয় ফিগার) -->
+        <!-- তৃতীয় ধাপ -->
         <div class="step-card" id="cardStep3">
-            <h4>৩য় ধাপ: ১লা জুলাই, ২০২৭</h4>
+            <h4>৩য় ধাপ: ১লা জুলাই, ২০২৭</h4>
             <div id="resStep3Details"></div>
         </div>
     </div>
 </div>
 
 <script>
-    // ১ থেকে ২০ গ্রেডের ২০১৫ এবং ২০২৬ সালের পূর্ণাঙ্গ স্কেল ডেটা
     const scaleData = {
         1: { scale2015: [78000], scale2026: [156000] },
         2: { scale2015: [66000, 68480, 71050, 73720, 76490], scale2026: [132000, 135700, 139400, 143200, 147200, 151200, 153000] },
@@ -229,7 +229,7 @@
         const stepIndex = parseInt(document.getElementById('stepSelect').value);
 
         if (!grade || isNaN(stepIndex)) {
-            alert('দয়া করে সঠিক গ্রেড এবং ধাপ নির্বাচন করুন।');
+            alert('দয়া করে সঠিক গ্রেড এবং ধাপ নির্বাচন করুন।');
             return;
         }
 
@@ -259,7 +259,6 @@
             }
         }
 
-        // নতুন নির্ধারিত মূল বেতনের সাথে ঠিক পরের একটি ইনক্রিমেন্ট যোগ করার লজিক
         let new2026WithIncrement = new2026Base;
         const baseIndex = scale2026List.indexOf(new2026Base);
         if (baseIndex !== -1 && baseIndex < scale2026List.length - 1) {
@@ -268,10 +267,8 @@
             new2026WithIncrement = new2026Base;
         }
 
-        // বেতন বৃদ্ধির পার্থক্য = (ইনক্রিমেন্টসহ নতুন মূল বেতন) - (২০১৫ সালের বর্তমান মূল বেতন)
         const payDifference = new2026WithIncrement - currentBasic;
         
-        // ধাপ অনুযায়ী পার্সেন্টেজ নির্ধারণ
         let p1 = (grade <= 9) ? 40 : 50;
         let p2 = (grade <= 9) ? 70 : 75;
         let p3 = 100;
@@ -284,7 +281,6 @@
         const sal2 = currentBasic + inc2;
         const sal3 = currentBasic + inc3;
 
-        // ৩য় ধাপের বাৎসরিক ইনক্রিমেন্টসহ পরবর্তী ফিগার
         let sal3WithInc = sal3;
         let matchedSal3Index = -1;
         for (let i = 0; i < scale2026List.length; i++) {
@@ -302,28 +298,25 @@
         document.getElementById('resGrade').innerHTML = `<b>নির্বাচিত গ্রেড:</b> ${grade} নম্বর গ্রেড`;
         document.getElementById('resCurrent2015').innerHTML = `<b>২০১৫ সালের বেতন স্কেলে ৩০ জুন ২০২৬ তারিখে আপনার বর্তমান মূল বেতন:</b> ${currentBasic} টাকা`;
         document.getElementById('resNew2026Base').innerHTML = `<b>২০২৬ সালের নতুন নির্ধারিত মূল বেতন:</b> ${new2026Base} টাকা`;
-        document.getElementById('resNew2026WithIncrement').innerHTML = `<b>২০২৬ সালে নির্ধারিত মূল বেতনের সাথে একটি ইনক্রিমেন্ট যোগ করে মোট বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${new2026WithIncrement} টাকা</span>`;
+        document.getElementById('resNew2026WithIncrement').innerHTML = `<b>অনুচ্ছেদ ৯ এর ২ অনুযায়ী ২০২৬ সালে নির্ধারিত মূল বেতনের সাথে একটি ইনক্রিমেন্ট যুক্ত হয়ে মোট বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${new2026WithIncrement} টাকা</span>`;
         document.getElementById('resDiff').innerHTML = `<b>বেতন বৃদ্ধির পার্থক্য (নতুন এবং বর্তমান):</b> ${payDifference} টাকা`;
         
         let groupText = (grade <= 9) ? '৯ম থেকে ১ম গ্রেড (বৃদ্ধি হার: ৪০% -> ৭০% -> ১০০%)' : '১০ম থেকে ২০তম গ্রেড (বৃদ্ধি হার: ৫০% -> ৭৫% -> ১০০%)';
         document.getElementById('resPercentageGroup').innerHTML = `<b>গ্রুপ ও বৃদ্ধির ধাপসমূহ:</b> ${groupText}`;
 
-        // ১ম ধাপ আউটপুট
         document.getElementById('resStep1Details').innerHTML = `
             <div class="result-item"><b>হার:</b> ${p1}%</div>
             <div class="result-item"><b>নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal1} টাকা</span></div>
         `;
 
-        // ২য় ধাপ আউটপুট
         document.getElementById('resStep2Details').innerHTML = `
             <div class="result-item"><b>হার:</b> ${p2}%</div>
             <div class="result-item"><b>নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal2} টাকা</span></div>
         `;
 
-        // ৩য় ধাপ আউটপুট (বাৎসরিক ইনক্রিমেন্ট ছাড়া এবং সহ উভয় ফিগার)
         document.getElementById('resStep3Details').innerHTML = `
             <div class="result-item"><b>হার:</b> ${p3}% (শতভাগ পূর্ণ)</div>
-            <div class="result-item"><b>বাৎসরিক ইনক্রিমেন্ট ছাড়া নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal3} টাকা</span></div>
+            <div class="result-item"><b>বাৎসরিক ইনক্রিমেন্ট ছাড়া নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal3} টাকা</span></div>
             <div class="result-item" style="margin-top: 6px; border-top: 1px dashed #d0d3d4; padding-top: 6px;"><b>বাৎসরিক ইনক্রিমেন্টসহ নির্ধারিত মূল বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${sal3WithInc} টাকা</span></div>
         `;
         
