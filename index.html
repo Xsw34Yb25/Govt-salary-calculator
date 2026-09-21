@@ -134,7 +134,7 @@
     <div class="footer-credit">
         Developed by Engr. Zahid Rahman<br>
         Bangladesh Railway<br>
-        Vr-1.53
+        Vr-1.54
     </div>
 
     <div class="result-box" id="resultBox">
@@ -162,6 +162,12 @@
         <div class="step-card" id="cardStep3">
             <h4>৩য় ধাপ: ১লা জুলাই, ২০২৭</h4>
             <div id="resStep3Details"></div>
+        </div>
+
+        <!-- চতুর্থ ধাপ: শতকরা বৃদ্ধি বিশ্লেষণ (ইনক্রিমেন্ট ব্যতীত নতুন মূল বেতন বনাম ৩০ জুন ২০২৬ এর বেতন) -->
+        <div class="step-card" id="cardStep4" style="border-color: #85c1e9; background-color: #ebf5fb;">
+            <h4 style="color: #2471a3; border-bottom-color: #aed6f1;">বিশ্লেষণ: বেতন বৃদ্ধির শতকরা হার (ইনক্রিমেন্ট ব্যতীত)</h4>
+            <div id="resStep4Details"></div>
         </div>
     </div>
 </div>
@@ -295,10 +301,14 @@
             sal3WithInc = scale2026List[scale2026List.length - 1];
         }
 
+        // চতুর্থ ধাপের হিসাব: (নতুন নির্ধারিত মূল বেতন (ইনক্রিমেন্ট ব্যতীত) - বর্তমান বেতন) / বর্তমান বেতন * ১০০
+        const baseDiffAmount = new2026Base - currentBasic;
+        const percentageIncrease = ((baseDiffAmount / currentBasic) * 100).toFixed(2);
+
         document.getElementById('resGrade').innerHTML = `<b>নির্বাচিত গ্রেড:</b> ${grade} নম্বর গ্রেড`;
         document.getElementById('resCurrent2015').innerHTML = `<b>২০১৫ সালের বেতন স্কেলে ৩০ জুন ২০২৬ তারিখে আপনার বর্তমান মূল বেতন:</b> ${currentBasic} টাকা`;
         document.getElementById('resNew2026Base').innerHTML = `<b>২০২৬ সালের নতুন নির্ধারিত মূল বেতন:</b> ${new2026Base} টাকা`;
-        document.getElementById('resNew2026WithIncrement').innerHTML = `<b>অনুচ্ছেদ ৯(২) অনুযায়ী ২০২৬ সালে নির্ধারিত মূল বেতনের সাথে একটি ইনক্রিমেন্ট যুক্ত হয়ে মোট বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${new2026WithIncrement} টাকা</span>`;
+        document.getElementById('resNew2026WithIncrement').innerHTML = `<b>অনুচ্ছেদ ৯ এর ২ অনুযায়ী ২০২৬ সালে নির্ধারিত মূল বেতনের সাথে একটি ইনক্রিমেন্ট যুক্ত হয়ে মোট বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${new2026WithIncrement} টাকা</span>`;
         document.getElementById('resDiff').innerHTML = `<b>বেতন বৃদ্ধির পার্থক্য (নতুন এবং বর্তমান):</b> ${payDifference} টাকা`;
         
         let groupText = (grade <= 9) ? '৯ম থেকে ১ম গ্রেড (বৃদ্ধি হার: ৪০% -> ৭০% -> ১০০%)' : '১০ম থেকে ২০তম গ্রেড (বৃদ্ধি হার: ৫০% -> ৭৫% -> ১০০%)';
@@ -318,6 +328,13 @@
             <div class="result-item"><b>হার:</b> ${p3}% (শতভাগ পূর্ণ)</div>
             <div class="result-item"><b>বাৎসরিক ইনক্রিমেন্ট ছাড়া নির্ধারিত মূল বেতন:</b> <span style="color: #c0392b; font-weight: bold;">${sal3} টাকা</span></div>
             <div class="result-item" style="margin-top: 6px; border-top: 1px dashed #d0d3d4; padding-top: 6px;"><b>১লা জুলাই ২০২৭ তারিখে বাৎসরিক ইনক্রিমেন্ট সহ নির্ধারিত মূল বেতন:</b> <span style="color: #2980b9; font-weight: bold;">${sal3WithInc} টাকা</span></div>
+        `;
+
+        document.getElementById('resStep4Details').innerHTML = `
+            <div class="result-item"><b>৩০ জুন ২০২৬ তারিখের মূল বেতন:</b> ${currentBasic} টাকা</div>
+            <div class="result-item"><b>২০২৬ সালের নতুন নির্ধারিত মূল বেতন (ইনক্রিমেন্ট ব্যতীত):</b> ${new2026Base} টাকা</div>
+            <div class="result-item"><b>পার্থক্য:</b> ${baseDiffAmount} টাকা</div>
+            <div class="result-item" style="margin-top: 6px; border-top: 1px dashed #aed6f1; padding-top: 6px;"><b>পূর্বের বেতনের সাপেক্ষে বর্তমান মূল বেতন বৃদ্ধির শতকরা হার:</b> <span style="color: #1b4f72; font-weight: bold;">${percentageIncrease}%</span></div>
         `;
         
         document.getElementById('resultBox').style.display = 'block';
